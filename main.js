@@ -1,24 +1,54 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import * as BABYLON from '@babylonjs/core'
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+const canvas = document.getElementById('renderCanvas');
 
-setupCounter(document.querySelector('#counter'))
+const engine = new BABYLON.Engine(canvas);
+
+const createScene = function() {
+  const scene = new BABYLON.Scene(engine);
+  // const camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0,1,-5), scene)
+  // camera.attachControl();
+
+  const hemiLight = new BABYLON.HemisphericLight(
+    "hemiLight",
+    new BABYLON.Vector3(0,2,0),
+    scene
+  );
+  hemiLight.intensity = 1.5
+
+  const ground = new BABYLON.MeshBuilder.CreateGround(
+    "ground", 
+    {width:20, height:20}, 
+    scene
+  )
+
+  const sphere = new BABYLON.MeshBuilder.CreateSphere("mySphere", {
+      diameter: 1,
+      segments: 6
+    }, scene);
+
+    sphere.position = new BABYLON.Vector3(0, 1.2, 0)
+  // ball.position.x = 1
+  
+  scene.createDefaultCameraOrLight(true, false, true)
+  const box = new BABYLON.MeshBuilder.CreateBox('myBox', {
+    size: 0.75,
+    width: 2,
+    height: 0.5,
+    depth: 0.5
+  });
+  
+  box.position = new BABYLON.Vector3(0, .25, 0)
+  
+  return scene;
+}
+
+const scene = createScene();
+
+engine.runRenderLoop(function() {
+  scene.render();
+});
+
+window.addEventListener('resize', function() {
+  engine.resize();
+});
