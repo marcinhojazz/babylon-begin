@@ -10,6 +10,8 @@
   },
   "devDependencies": {
     "@babylonjs/core": "^6.21.0",
+    "@babylonjs/inspector": "^6.21.1",
+    "@babylonjs/loaders": "^6.21.1",
     "vite": "^4.4.5"
   }
 }
