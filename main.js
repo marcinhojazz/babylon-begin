@@ -63,29 +63,29 @@ const createScene = async function() {
     // sphere.position = new BABYLON.Vector3(0, 1.2, 0)
 
   // BOX TIPS
-  const box = new BABYLON.MeshBuilder.CreateBox('myBox', {
-    size: 0.75,
-    // width: 2,
-    // height: 0.5,
-    // depth: 0.5,
-    // faceColors: [
-    //   new BABYLON.Color4(1, 0, 0, 1),
-    //   BABYLON.Color3.Green()
-    // ]
-    faceUV: [
-      new BABYLON.Vector4(0, 0, 1/6, 1),
-      new BABYLON.Vector4(1/6, 0, 2/6, 1),
-      new BABYLON.Vector4(2/6, 0, 3/6, 1),
-      new BABYLON.Vector4(3/6, 0, 4/6, 1),
-      new BABYLON.Vector4(4/6, 0, 5/6, 1),
-      new BABYLON.Vector4(5/6, 0, 1, 1),
-    ],
-    wrap: true
-  });
+  // const box = new BABYLON.MeshBuilder.CreateBox('myBox', {
+  //   size: 0.75,
+  //   // width: 2,
+  //   // height: 0.5,
+  //   // depth: 0.5,
+  //   // faceColors: [
+  //   //   new BABYLON.Color4(1, 0, 0, 1),
+  //   //   BABYLON.Color3.Green()
+  //   // ]
+  //   faceUV: [
+  //     new BABYLON.Vector4(0, 0, 1/6, 1),
+  //     new BABYLON.Vector4(1/6, 0, 2/6, 1),
+  //     new BABYLON.Vector4(2/6, 0, 3/6, 1),
+  //     new BABYLON.Vector4(3/6, 0, 4/6, 1),
+  //     new BABYLON.Vector4(4/6, 0, 5/6, 1),
+  //     new BABYLON.Vector4(5/6, 0, 1, 1),
+  //   ],
+  //   wrap: true
+  // });
 
-  const boxCatMat = new BABYLON.StandardMaterial();
-  box.material = boxCatMat;
-  boxCatMat.emissiveTexture = new BABYLON.Texture('/cats.png');
+  // const boxCatMat = new BABYLON.StandardMaterial();
+  // box.material = boxCatMat;
+  // boxCatMat.emissiveTexture = new BABYLON.Texture('/cats.png');
 
   
   // box.position.x = -1
@@ -100,19 +100,25 @@ const createScene = async function() {
   
   const utilLayer = new BABYLON.UtilityLayerRenderer(scene);
   
-  const positionGizmo = new BABYLON.PositionGizmo();
-  positionGizmo.attachedMesh = box
-
-
+  // const positionGizmo = new BABYLON.PositionGizmo(utilLayer);
+  // positionGizmo.attachedMesh = box
   
+  // const rotationGizmo = new BABYLON.RotationGizmo(utilLayer);
+  // rotationGizmo.attachedMesh = box
+  
+  // const scaleGizmo = new BABYLON.ScaleGizmo(utilLayer);
+  // scaleGizmo.attachedMesh = box
+  
+  // const planeGizmo = new BABYLON.PlaneRotationGizmo(new BABYLON.Vector3(0, 1, 0), BABYLON.Color3.Red(), utilLayer);
+  // planeGizmo.attachedMesh = box
 
   // Ground 1
-  // const ground = new BABYLON.MeshBuilder.CreateGround("ground", {
-  //   width: 5, 
-  //   height: 10,
-  //   subdivisions: 5,
-  //   subdivisionsX: 10
-  // })
+  const ground = new BABYLON.MeshBuilder.CreateGround("ground", {
+    width: 5, 
+    height: 10,
+    subdivisions: 5,
+    subdivisionsX: 10
+  })
 
   // const groundCatMat = new BABYLON.StandardMaterial();
   // ground.material = groundCatMat;
@@ -149,13 +155,94 @@ const createScene = async function() {
     resolution: 64,
   })
 
-  text.position = new BABYLON.Vector3(0, -.5, 0)
+  text.position = new BABYLON.Vector3(0, .5, 0)
   
+  // ANIMATIONS
+  // animation rotate
+  // scene.registerBeforeRender(function() {
+  //   box.rotation.x += 0.01;
+  //   box.rotation.y += 0.01;
+  //   box.rotation.z += 0.01;
+  // })
+
+  // BABYLON.Animation.CreateAndStartAnimation(
+  //   'xScaleAnimation',
+  //   box,
+  //   'scaling.x',
+  //   30,
+  //   120,
+  //   0,
+  //   2,
+  //   BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+  //   new BABYLON.CircleEase
+  // )
+
+  // const animation = new BABYLON.Animation(
+  //   'yRotAnimation',
+  //   'rotation.y',
+  //   30,
+  //   BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+  //   BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+  // );
+
+  // const animationKeys = [];
+
+  // animationKeys.push({
+  //   frame: 0,
+  //   value: 0
+  // })
+
+  // animationKeys.push({
+  //   frame: 120,
+  //   value: 2 * Math.PI
+  // })
+
+  // animation.setKeys(animationKeys)
+
+  // box.animations = [];
+  // box.animations.push(animation)
+  // scene.beginAnimation(box, 0, 120, true)
+
+
+  // const light = new BABYLON.PointLight(
+  //   'pointLight',
+  //   new BABYLON.Vector3(0, 1, 0),
+  //   scene
+  // );
+
+  // const light = new BABYLON.SpotLight(
+  //   'spotLight',
+  //   new BABYLON.Vector3(0, 1, 0),
+  //   new BABYLON.Vector3(0, -1, 0),
+  //   Math.PI / 3,
+  //   2,
+  //   scene
+  // );
+  // light.range = 50;
+
+  // const light = new BABYLON.DirectionalLight(
+  //   'directionalLight',
+  //   new BABYLON.Vector3(-2, -3, 0),
+  //   scene
+  // );
+  // light.intensity = 0.5
+
+  const light = new BABYLON.HemisphericLight(
+    'hemisphericLight',
+    new BABYLON.Vector3(-5, 5, 0),
+    scene
+  );
+  light.groundColor = new BABYLON.Color3(0, 1, 0)
+
+  light.diffuse = new BABYLON.Color3(0, 0, 1);
+  light.specular = new BABYLON.Color3(0, 0, 1);
+
+
+  const lightGizmo = new BABYLON.LightGizmo(utilLayer);
+  lightGizmo.light = light;
   
   return scene;
 }
-
-
 
 const scene = await createScene();
 
