@@ -1,4 +1,5 @@
-import * as BABYLON from '@babylonjs/core'
+import * as BABYLON from '@babylonjs/core';
+import '@babylonjs/loaders/glTF';
 
 const canvas = document.getElementById('renderCanvas');
 
@@ -37,11 +38,13 @@ const createScene = async function() {
   );
   hemiLight.intensity = 0.5
 
-  // const sphere = new BABYLON.MeshBuilder.CreateSphere("mySphere", {
-  //     segments: 50,
-  //     diameter: 0.6,
-  //     // diameterY: 0.4
-  //   }, scene);
+  const sphere = new BABYLON.MeshBuilder.CreateSphere("mySphere", {
+      segments: 50,
+      diameter: 0.6,
+      // diameterY: 0.4
+    }, scene);
+
+    sphere.position = new BABYLON.Vector3(0, 1.25, 1)
 
   //   const sphereMaterial = new BABYLON.StandardMaterial();
   //   sphere.material = sphereMaterial;
@@ -204,11 +207,12 @@ const createScene = async function() {
   // scene.beginAnimation(box, 0, 120, true)
 
 
-  // const light = new BABYLON.PointLight(
-  //   'pointLight',
-  //   new BABYLON.Vector3(0, 1, 0),
-  //   scene
-  // );
+  const light = new BABYLON.PointLight(
+    'pointLight',
+    new BABYLON.Vector3(0, 1, 0),
+    scene
+  );
+  light.position = new BABYLON.Vector3(0, 3, 0)
 
   // const light = new BABYLON.SpotLight(
   //   'spotLight',
@@ -227,20 +231,72 @@ const createScene = async function() {
   // );
   // light.intensity = 0.5
 
-  const light = new BABYLON.HemisphericLight(
-    'hemisphericLight',
-    new BABYLON.Vector3(-5, 5, 0),
-    scene
-  );
-  light.groundColor = new BABYLON.Color3(0, 1, 0)
+  // const light = new BABYLON.HemisphericLight(
+  //   'hemisphericLight',
+  //   new BABYLON.Vector3(-5, 5, 0),
+  //   scene
+  // );
+  // light.groundColor = new BABYLON.Color3(0, 1, 0)
 
-  light.diffuse = new BABYLON.Color3(0, 0, 1);
-  light.specular = new BABYLON.Color3(0, 0, 1);
+  // light.diffuse = new BABYLON.Color3(0, 0, 1);
+  // light.specular = new BABYLON.Color3(0, 0, 1);
 
 
   const lightGizmo = new BABYLON.LightGizmo(utilLayer);
   lightGizmo.light = light;
+
+  const shadowGenerator = new BABYLON.ShadowGenerator(1024, light)
+
+  shadowGenerator.addShadowCaster(sphere);
+  ground.receiveShadows = true;
+
+  // shadowGenerator.setDarkness(0.75)
+  shadowGenerator.useBlurExponentialShadowMap = true;
+  shadowGenerator.useKernelBlur = true;
+  shadowGenerator.blurKernel = 64;
+
+  // scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+  // scene.fogStart = 10;
+  // scene.fogEnd = 20;
+
+  scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+  scene.fogDensity = .08
+  scene.fogColor = new BABYLON.Color3(0.3, 0.2, 0.6)
+
+  scene.onPointerDown = function castRay() {
+    const hit = scene.pick(scene.pointerX, scene.pointerY);
+
+    if(hit.pickedMesh && hit.pickedMesh.name === 'mySphere') {
+      hit.pickedMesh.material = new BABYLON.StandardMaterial();
+      hit.pickedMesh.material.diffuseColor = BABYLON.Color3.Red();
+    }
+  }
+
+  BABYLON.SceneLoader.ImportMesh(
+    '',
+    '/',
+    'avatar.gltf',
+    scene,
+    function(meshes, particleSystems, skeletons, animationGroups) {
+      const model = meshes[0]
+      model.scaling = new BABYLON.Vector3(0.25, 0.25, 0.25);
+
+      animationGroups[1]
+    }
+  )
+
+  BABYLON.SceneLoader.ImportMeshAsync('', '/', 'avatar.gltf', scene).then((result) => {
+    const importedAnimGroups = result.animationGroups;
+    importedAnimGroups[3].play(true)
+  });
+
+  const bgMusic = new BABYLON.Sound('mySong', '/sunflower.mp3', scene, null, {
+    loop: true,
+    autoplay: true
+  })
+
   
+
   return scene;
 }
 
